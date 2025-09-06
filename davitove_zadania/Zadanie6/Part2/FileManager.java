@@ -24,7 +24,11 @@ public class FileManager {
         File f = new File(fileName);
 
         try {
-            return f.exists() ? new FileManager(f) : null;
+            if (!f.exists()) {
+                throw new FileNotFoundException("File not found!");
+            }
+
+            return new FileManager(f);
 
         } catch (IOException e) {
             return null;
