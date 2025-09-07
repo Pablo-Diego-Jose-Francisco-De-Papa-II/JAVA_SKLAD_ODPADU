@@ -12,12 +12,10 @@ import java.util.Scanner;
 
 public class FileManager {
     private final File file;
-    private FileWriter txtWriter;
-    
+
 
     private FileManager(File file) throws IOException {
         this.file = file;
-        this.txtWriter = new FileWriter(file, true);
     }
 
     public static FileManager openAndGetFile(String fileName) {
@@ -42,28 +40,25 @@ public class FileManager {
             return newFile.createNewFile() ? new FileManager(newFile) : null;
 
         } catch (IOException e) {
-            return null;
+            throw new RuntimeException("File already exists or can't be created!");
         }
     }
 
     public boolean write(String text) {
-        try {
-            txtWriter.write(text);
-            txtWriter.flush();
-
+        try (FileWriter writer = new FileWriter(file, false)) {
+            writer.write(text);
             return true;
-
         } catch (IOException e) {
             return false;
         }
     }
 
     public boolean writeAll(String[] text) {
-        try {
-            for (String idk : text) {
-                txtWriter.write(idk);
+        try (FileWriter writer = new FileWriter(file, false)) {
+            for (String line : text) {
+                writer.write(line);
             }
-            txtWriter.flush();
+            writer.flush();
 
             return true;
 
